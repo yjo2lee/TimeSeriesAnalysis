@@ -64,7 +64,7 @@ std.SPACF = sqrt(1/length(rt))
 rho_rt = acf(rt, num_k)
 phi_rt = pacf(rt, num_k)
 
-#2. SACF, SPACF; dataframe
+#2. SACF, SPACF; using sarima
 DF_data1<-data.frame('SACF' = rep(0, num_k), 'std.SACF' = rep(0,num_k), 'SPACF' = rep(0, num_k), 'std.SPACF' = rep(0, num_k))
 for (i in 1:num_k){
   DF_data1[i,1] = rho_rt$acf[i+1]
@@ -73,7 +73,18 @@ for (i in 1:num_k){
   DF_data1[i,4] = std.SPACF
 }
 
-#3. white noise test
+#3. SACF, SPACF; in person
+num_sample = 3
+DF_data.hand<-data.frame('SACF' = rep(0, num_sample), 'std.SACF' = rep(0,num_sample), 'SPACF' = rep(0, num_sample), 'std.SPACF' = rep(0, num_sample))
+for (i in 1:num_sample){
+  DF_data.hand[i,1] = mySACF(rt, i)
+  DF_data.hand[i,2] = std.SACF(rt, i)
+  DF_data.hand[i,3] = mySPACF(rt, i)
+  DF_data.hand[i,4] = std.SPACF
+  
+}
+
+#3_2. white noise test
 rt.wntest <- whiteNoiseTest(autocorrelations(rt,20), h0 = "iid", nlags = c(1:20), x = autocorrelations(rt,20))
 
 #4. time_lag; 10
@@ -108,6 +119,16 @@ for (i in 1:num_k){
   DF_data2[i,2] = std.SACF(yt, i)
   DF_data2[i,3] = phi_yt$acf[i]
   DF_data2[i,4] = std.SPACF.yt
+}
+
+#SACF, SPACF; in person
+num_sample = 3
+DF_data2.hand<-data.frame('SACF' = rep(0, num_sample), 'std.SACF' = rep(0,num_sample), 'SPACF' = rep(0, num_sample), 'std.SPACF' = rep(0, num_sample))
+for (i in 1:num_sample){
+  DF_data2.hand[i,1] = mySACF(yt, i)
+  DF_data2.hand[i,2] = std.SACF(yt, i)
+  DF_data2.hand[i,3] = mySPACF(yt, i)
+  DF_data2.hand[i,4] = std.SPACF.yt
 }
 
 # lag_10
